@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  bd:
+    image: mysql:8.0
+    container_name: carwash_bd
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - carwash_network
+  api:
+    build: ./api/carwash-api
+    container_name: carwash_api
+    restart: always
+    ports:
+      - "4000:4001"
+    depends_on:
+      - bd
+    volumes:
+      - ./api/carwash-api/.env:/app/.env
+    networks:
+      - carwash_network
+networks:
+  carwash_network:
+    driver: bridge
